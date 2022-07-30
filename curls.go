@@ -40,9 +40,9 @@ func main() {
 		c.Visit(e.Request.AbsoluteURL(link))
 	})
 
-	// c.OnHTML("script[src]", func(e *colly.HTMLElement) {
-	// 	printResults(e.Attr("src"), "script", results, e)
-	// })
+	c.OnHTML("script[src]", func(e *colly.HTMLElement) {
+		fmt.Printf(e.Attr("src"), "script", e)
+	})
 
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
