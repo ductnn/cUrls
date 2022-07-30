@@ -24,10 +24,14 @@ func main() {
 		return
 	}
 
+	allowedDomains := []string{hostName}
+
 	c := colly.NewCollector(
+		colly.AllowedDomains(allowedDomains...),
 		colly.URLFilters(
-			regexp.MustCompile(".*(\\.|\\/\\/)" + strings.ReplaceAll(hostName, ".", "\\.") + "((#|\\/|\\?).*)?"),
+			regexp.MustCompile(".*(\\.|\\/\\/)"+strings.ReplaceAll(hostName, ".", "\\.")+"((#|\\/|\\?).*)?"),
 		),
+		colly.MaxDepth(2),
 	)
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
@@ -53,14 +57,4 @@ func extractHostnameFromURL(urlString string) (string, error) {
 		return "", err
 	}
 	return u.Hostname(), nil
-}
-
-func printResults(link string, sourceName string, results chan string, e *colly.HTMLElement) {
-	result := e.Request.AbsoluteURL(link)
-
-	if result != "" {
-		result = "[" + sourceName + "] " + result
-	}
-
-	results <- result
 }
